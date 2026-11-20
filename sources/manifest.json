@@ -38,6 +38,14 @@
       "name": "YouTube enhancements",
       "status": "integrated",
       "script_assets": 4
+    },
+    {
+      "name": "Romeo Keli ad filter (fking/Beta/Remove_ads_by_keli.lpx)",
+      "status": "integrated_deduplicated",
+      "script_assets": 0,
+      "rules_added": 0,
+      "rewrites_added": 0,
+      "mitm_patterns_consolidated": 1
     }
   ],
   "bundle_counts": {
@@ -45,7 +53,7 @@
     "rule": 719,
     "rewrite": 563,
     "script": 80,
-    "mitm_hosts": 303,
+    "mitm_hosts": 302,
     "mitm_wildcards": 1
   },
   "runtime_assets": {
@@ -79,5 +87,22 @@
     "migration_method": "authorized_file_by_file_transfer_from_successful_no_base_preview_artifact",
     "full_no_base_snapshot": "migrated_in_PR_1_pending_device_regression",
     "base_checkout_required": false
-  }
+  },
+  "source_audits": [
+    {
+      "source": "https://github.com/ifflagged/Romeo/blob/318cef4811f8402b92cfd0a886f9ebdcf99a3732/Modules/Loon/fking/Beta/Remove_ads_by_keli.lpx",
+      "result": "deduplicated",
+      "rule_entries": 24,
+      "unique_rule_entries": 23,
+      "duplicate_rule_entries": 1,
+      "unique_rule_entries_already_covered": 23,
+      "rewrite_entries": 82,
+      "rewrite_entries_already_covered": 82,
+      "new_rules": 0,
+      "new_rewrites": 0,
+      "mitm_hosts_in_source": 63,
+      "mitm_change": "Replace api-mifit.huami.com and api-mifit-cn2.huami.com with api-mifit*.huami.com; omit nine extra unused/broader source declarations.",
+      "net_mitm_host_entry_change": -1
+    }
+  ]
 }

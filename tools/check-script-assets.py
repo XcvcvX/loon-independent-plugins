@@ -32,7 +32,7 @@ host_line = next((line for line in sections["MITM"] if line.strip().lower().star
 if not host_line:
     raise SystemExit("FAIL: MITM hostname declaration missing")
 hosts = [host.strip() for host in host_line.split("=", 1)[1].split(",") if host.strip()]
-if len(hosts) != 303 or len(hosts) != len(set(hosts)):
+if len(hosts) != 302 or len(hosts) != len(set(hosts)):
     raise SystemExit(f"FAIL: MITM hosts count/uniqueness mismatch: {len(hosts)}")
 if any("github.com" in host.lower() or "githubusercontent.com" in host.lower() for host in hosts):
     raise SystemExit("FAIL: GitHub host remains in MITM")

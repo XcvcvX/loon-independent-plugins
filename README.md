@@ -16,7 +16,7 @@ The bundle is a no-base extraction from the source project. It contains independ
 - Rule: 719 entries
 - Rewrite: 563 entries
 - Script: 80 entries
-- MITM: 303 unique host entries (including one wildcard host)
+- MITM: 302 unique host entries (including wildcard host patterns)
 - Runtime assets: 40 unique files (38 JavaScript + 2 jq), vendored or pinned to immutable commits in this repository.
 - Generic GitHub request-header rewriting was removed. The bundle does not add GitHub domains to MITM.
 
@@ -30,6 +30,14 @@ The bundle is a no-base extraction from the source project. It contains independ
 ## Device regression status
 
 The migrated snapshot has static and public-asset checks, but it has **not yet been verified on a physical iPhone in Loon**. In particular, test Spotify launch/login/playback, Xianyu feed/search, Amap navigation/search, and other app flows before replacing an existing working setup. Device performance, battery impact, and real-world blocking effectiveness are not claimed as measured.
+
+
+## Additional upstream source audit
+
+- Audited Romeo's [Keli ad filter](https://github.com/ifflagged/Romeo/blob/318cef4811f8402b92cfd0a886f9ebdcf99a3732/Modules/Loon/fking/Beta/Remove_ads_by_keli.lpx) at immutable commit `318cef4811f8402b92cfd0a886f9ebdcf99a3732` (credited to 可莉).
+- Its 24 Rule lines contain one duplicate; all 23 unique rules are already covered by the current bundle. The `sdkconfig.ad.xiaomi.com` rule is already covered by the existing `ad.xiaomi.com` suffix rule.
+- All 82 Rewrite entries are already present, so no duplicate Rule or Rewrite entries were added.
+- MITM was consolidated from two exact Mi Fit hosts into `api-mifit*.huami.com`, matching the source's broader URL matchers while reducing the declaration count from 303 to 302. Nine other source MITM declarations were not imported because this source's Rule/Rewrite sections do not reference them.
 
 ## Attribution
 
