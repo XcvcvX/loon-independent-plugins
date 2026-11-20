@@ -42,3 +42,17 @@ The migrated snapshot has static and public-asset checks, but it has **not yet b
 ## Attribution
 
 Original script headers and author notices are retained. Preserve upstream attribution and applicable licenses when redistributing.
+
+## Installed-app coverage supplement
+
+A second, standalone low-overhead companion plugin was added from the installed-app audit:
+
+`https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/plugins/installed-app-adblock-addon.plugin`
+
+- 5 domain rules, 20 exact request URL filters, 14 unique MITM hosts.
+- No JavaScript, no response-body parsing, and no broad catch-all app rules.
+- Covers selected ad endpoints for Meituan/Meituan Waimai, Ctrip, Fliggy, Didi, Baidu Maps, Baidu Netdisk, Cainiao, PICC, Tuhu and China Construction Bank.
+- This companion is a separate GPL-3.0 artifact derived from zirawell's R-Store ad-block rules. Its attribution and license are in `LICENSES/`.
+- The original primary plugin is unchanged. Install the companion as a second Loon plugin if these additional app filters are needed.
+
+See [the installed-app matching audit](sources/installed-app-match-audit.md) for Bundle ID matching, upstream priority results, skipped modules, and the reason high-cost body scripts were excluded.

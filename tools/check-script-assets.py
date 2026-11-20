@@ -88,3 +88,36 @@ for url, reason in failed:
 if failed:
     raise SystemExit(1)
 print("PASS:", len(urls), "unique runtime assets anonymously fetched; pin:", next(iter(pins)))
+
+
+# Validate the installed-app companion separately. It is intentionally static-only
+# so app ad filtering does not add response-body parsing or runtime JS execution.
+ADDON = Path("plugins/installed-app-adblock-addon.plugin")
+addon_source = ADDON.read_text(encoding="utf-8")
+addon_lines = addon_source.splitlines()
+addon_sections = {}
+for name in ["Rule", "Rewrite", "MITM"]:
+    marker = f"[{name}]"
+    if addon_lines.count(marker) != 1:
+        raise SystemExit(f"FAIL: companion expected exactly one {marker}")
+    start = addon_lines.index(marker) + 1
+    end = next((i for i in range(start, len(addon_lines)) if addon_lines[i].startswith("[") and addon_lines[i].endswith("]")), len(addon_lines))
+    addon_sections[name] = [line for line in addon_lines[start:end] if line.strip() and not line.lstrip().startswith("#")]
+
+if any(line.strip() == "[Script]" for line in addon_lines):
+    raise SystemExit("FAIL: companion must not contain a [Script] section")
+if any(token in addon_source for token in ["script-path=", "http-response ", "response if ", "script("]):
+    raise SystemExit("FAIL: companion must remain free of scripts and response-body parsing")
+if len(addon_sections["Rule"]) != 5:
+    raise SystemExit(f"FAIL: companion Rule count {len(addon_sections['Rule'])}, expected 5")
+if len(addon_sections["Rewrite"]) != 20:
+    raise SystemExit(f"FAIL: companion Rewrite count {len(addon_sections['Rewrite'])}, expected 20")
+if any(not line.startswith("request if ") or "then reject_dict(200)" not in line for line in addon_sections["Rewrite"]):
+    raise SystemExit("FAIL: companion Rewrite entries must be exact request URL rejects")
+addon_host_line = next((line for line in addon_sections["MITM"] if line.strip().lower().startswith("hostname") and "=" in line), None)
+if not addon_host_line:
+    raise SystemExit("FAIL: companion MITM hostname declaration missing")
+addon_hosts = [host.strip() for host in addon_host_line.split("=", 1)[1].split(",") if host.strip()]
+if len(addon_hosts) != 14 or len(addon_hosts) != len(set(addon_hosts)):
+    raise SystemExit(f"FAIL: companion MITM count/uniqueness mismatch: {len(addon_hosts)}")
+print("PASS: installed-app companion has 5 domain rules, 20 request-only rewrites, 14 unique MITM hosts, and no scripts.")

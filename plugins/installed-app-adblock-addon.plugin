@@ -1,0 +1,63 @@
+#!name=已安装应用去广告补充（低开销）
+#!desc=按当前设备 App 清单补充的静态广告接口拦截。仅 URL 匹配与请求拒绝，不调用 JS、不解析响应体；不含 R-Store Base。
+#!author=zirawell / Romeo（规则来源与适配）
+#!tag=去广告
+#!version=1.0.1
+#!homepage=https://github.com/XcvcvX/loon-independent-plugins
+#!loon_version=3.5.1(978)
+
+[Rule]
+# 美团 / 美团外卖：明确广告域名
+DOMAIN,ad.e.waimai.sankuai.com,REJECT
+DOMAIN,mads.meituan.com,REJECT
+
+# 飞猪：广告追踪域名
+DOMAIN,ad-track.fliggy.com,REJECT
+
+# 百度地图：广告配置域名
+DOMAIN,afdconf.baidu.com,REJECT
+
+# 中国建设银行：广告资源域名
+DOMAIN-SUFFIX,adv.ccb.com,REJECT
+
+[Rewrite]
+# 携程：广告列表与百度信息流广告
+request if ${url} ~= /^https:\/\/m\.ctrip\.com\/restapi\/.*\/getAdsList/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/mbd\.baidu\.com\/newspage\/api\/getmobads\?page=landingshare/i then reject_dict(200)
+
+# 飞猪：活动弹窗 / 屏显广告资源（screen 主接口已由主插件覆盖）
+request if ${url} ~= /^https:\/\/acs\.m\.taobao\.com\/gw\/mtop\.fliggy\.crm\.popresource/i then reject_dict(200)
+
+# 美团：营销资源接口
+request if ${url} ~= /^https:\/\/sqt\.meituan\.com\/s\/gateway\/mweb\/api\/marketingResource\/show/i then reject_dict(200)
+
+# 滴滴：车主页弹窗及活动资源
+request if ${url} ~= /^https:\/\/ut\.xiaojukeji\.com\/ut\/kappa\/api\/owner\/index\/dialog/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/res\.xiaojukeji\.com\/resapi\/activity\/(m|xp)get/i then reject_dict(200)
+
+# 百度地图：政务信息流推广内容
+request if ${url} ~= /^https:\/\/newclient\.map\.baidu\.com\/feed\/govui\/rich_content/i then reject_dict(200)
+
+# 百度网盘：明确的广告、福利和活动入口
+request if ${url} ~= /^https:\/\/pan\.baidu\.com\/rest\/\d\.\d\/pcs\/ad(?:\?|$)/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/pan\.baidu\.com\/rest\/.+\/pcs\/adx(?:\?|$)/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/pan\.baidu\.com\/act\/v\d\/(bchannel|welfare)\/list(?:\?|$)/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/pan\.baidu\.com\/act\/api\/activityentry(?:\?|$)/i then reject_dict(200)
+
+# 菜鸟：广告关键词、广告推荐和飞行广告接口
+request if ${url} ~= /^https:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.adkeyword\.get/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.adx\.flyad\.getad/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/netflow-mtop\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads/i then reject_dict(200)
+
+# 中国人保：启动广告页和弹窗广告
+request if ${url} ~= /^https:\/\/zgrb\.epicc\.com\.cn\/G-HAPP\/a\/update\/startupPage(?:\?|$)/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/zgrb\.epicc\.com\.cn\/G-HAPP\/a\/config\/windowsintegration\/getMessage/i then reject_dict(200)
+
+# 途虎：营销活动与首页横幅
+request if ${url} ~= /^https:\/\/(mkt-)?gateway\.tuhu\.cn\/(mkt\/)?mkt-cms\/circle\/recommend/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/(mkt-)?gateway\.tuhu\.cn\/(mkt\/)?mkt-push-message-box\/banner\/cms\/getIndexBanner/i then reject_dict(200)
+
+[MITM]
+hostname = m.ctrip.com, mbd.baidu.com, acs.m.taobao.com, sqt.meituan.com, ut.xiaojukeji.com, res.xiaojukeji.com, newclient.map.baidu.com, pan.baidu.com, cn-acs.m.cainiao.com, guide-acs.m.taobao.com, netflow-mtop.cainiao.com, zgrb.epicc.com.cn, mkt-gateway.tuhu.cn, gateway.tuhu.cn
