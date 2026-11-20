@@ -1,32 +1,35 @@
 # Loon Independent Plugins
 
-A standalone Loon plugin collection built from independent app-specific sources. No R-Store base plugin, inherited R-Store rules, or R-Store base MITM declarations are included.
+A standalone Loon plugin snapshot assembled from independent app-specific sources. This build does **not** use the R-Store base plugin, inherited R-Store rules, or R-Store base MITM declarations.
 
-## Current installable bundle
+## Install
 
-- [Independent Apps plugin](plugins/independent-apps.plugin)
-- Subscription URL:
-  `https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/plugins/independent-apps.plugin`
+Raw subscription URL:
 
-The currently published plugin is the staged first bundle (Spotify, Xianyu, Qunar, and Chelaile). It is not yet the complete no-base preview migration.
+`https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/plugins/independent-apps.plugin`
 
-## Migration inventory
+The bundle is a no-base extraction from the source project. It contains independent app rules from Romeo (including Kelee and other credited components), RuCu6 Amap, zirawell AlipayAdBlock, ddgksf2013 GuaZiVideoAds, and YouTube enhancement sources. Original script author notices are retained.
 
-- 39 runtime script assets from the no-base preview have been vendored into `scripts/`.
-- The vendored set includes first-party scripts, Romeo/Kelee assets, Amap/YouTube assets, and the initial four-app scripts.
-- Script assets are intended to be referenced through immutable commit URLs.
-- The full merged rules/plugin snapshot still needs to be published and validated against these 39 assets.
+## Bundle inventory
 
-## Important build constraint
+- Argument: 18 entries
+- Rule: 719 entries
+- Rewrite: 563 entries
+- Script: 80 entries
+- MITM: 303 unique host entries (including one wildcard host)
+- Runtime assets: 40 unique files (38 JavaScript + 2 jq), vendored or pinned to immutable commits in this repository.
+- Generic GitHub request-header rewriting was removed. The bundle does not add GitHub domains to MITM.
 
-The source repository `XcvcvX/loon-change` is private. GitHub Actions in this public destination repository cannot anonymously check it out, so the cross-repository build workflow was removed rather than leaving a permanently failing pipeline or embedding private credentials. The no-base build snapshot can still be migrated using the authorized GitHub connection, then rebuilt and verified here.
+## Independence and validation
 
-## Delivery policy
+- No R-Store base is loaded or inherited.
+- All runtime script and jq dependencies are hosted in this repository and pinned to immutable commit SHAs.
+- CI checks every active `script-path`, `script(...)`, and `jq_file(...)` asset with anonymous HTTPS requests. It rejects missing, empty, unpinned, oversized, or external resources.
+- Static validation checks section structure, asset references, duplicate MITM declarations, and GitHub isolation.
 
-- First-party and approved upstream scripts are vendored.
-- Runtime URLs must point to this repository and an immutable 40-character commit.
-- CI anonymously fetches every active `script-path` and `script(...)` URL, rejecting external, unpinned, empty, or unavailable assets.
-- Loon device regression is still required for Spotify startup/playback, Xianyu feed/search, and other app flows.
+## Device regression status
+
+The migrated snapshot has static and public-asset checks, but it has **not yet been verified on a physical iPhone in Loon**. In particular, test Spotify launch/login/playback, Xianyu feed/search, Amap navigation/search, and other app flows before replacing an existing working setup. Device performance, battery impact, and real-world blocking effectiveness are not claimed as measured.
 
 ## Attribution
 
