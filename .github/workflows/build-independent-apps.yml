@@ -1,0 +1,146 @@
+name: Build and publish complete independent-app bundle
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-independent-apps.yml"
+      - "tools/rewrite-script-assets.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout destination repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Checkout isolated no-base source builder
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: XcvcvX/loon-change
+          ref: preview/no-rstore-base
+          path: source
+          fetch-depth: 1
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+      - name: Fetch pinned upstream source snapshot
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/amap /tmp/spotify-scripts sources/alipayAdBlock sources/spotify scripts/spotify
+          git clone --no-checkout https://github.com/ifflagged/Romeo.git /tmp/romeo
+          ROMEO_SHA=51a9b27e769c8ced6762de800da9c1bba684d60a
+          git -C /tmp/romeo fetch --depth 1 origin "$ROMEO_SHA"
+          git -C /tmp/romeo checkout --detach "$ROMEO_SHA"
+          echo "ROMEO_SHA=$ROMEO_SHA" >> "$GITHUB_ENV"
+          python3 stage_romeo_plugins.py --romeo-repo /tmp/romeo --commit "$ROMEO_SHA" --output /tmp/romeo/plugins --zmjde-output /tmp/romeo-zmjde/Plugin
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/QuantumultX/ddgksf2013/Official/GuaZiVideoAds.conf" > /tmp/GuaZiVideoAds.conf
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/Loon/zirawell/Beta/alipayAdBlock.lpx" > sources/alipayAdBlock/alipayAdBlock.lpx
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/Loon/sooyaaabo/Amap.lpx" > /tmp/amap/Amap.lpx
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/sooyaaabo/Amap/rucu6_amap.js" > /tmp/amap/rucu6_amap.js
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/sooyaaabo/Amap/loon_Amap.recommend.jq" > /tmp/amap/loon_Amap.recommend.jq
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/Kelee/Amap_remove_ads/kelee_updatable.jq" > /tmp/amap/updatable.jq
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/Kelee/Amap_remove_ads/kelee_search_poi_detail.jq" > /tmp/amap/search_poi_detail.jq
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/Loon/devchristian1337/Official/Spotify.lpx" > sources/spotify/Spotify.lpx
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/devchristian1337/Spotify/devchristian1337_spot-gabo.js" > /tmp/spotify-scripts/spot-gabo.js
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/devchristian1337/Spotify/devchristian1337_spot-NoSearchAd.js" > /tmp/spotify-scripts/spot-NoSearchAd.js
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/devchristian1337/Spotify/devchristian1337_spot-NoHomeAd.js" > /tmp/spotify-scripts/spot-NoHomeAd.js
+          git -C /tmp/romeo show "$ROMEO_SHA:Modules/JavaScript/devchristian1337/Spotify/devchristian1337_spot-NoScrollAd.js" > /tmp/spotify-scripts/spot-NoScrollAd.js
+          python3 apply_amap_local_overrides.py --plugin /tmp/amap/Amap.lpx
+          cp /tmp/amap/* sources/amap/
+          git apply --check patches/amap-rucu6-performance.patch
+          git apply patches/amap-rucu6-performance.patch
+          node --check sources/amap/rucu6_amap.js
+      - name: Validate source inventories
+        working-directory: source
+        run: |
+          python3 source_guard.py --romeo /tmp/romeo --zmjde /tmp/romeo-zmjde --qxapp /tmp/GuaZiVideoAds.conf --amap /tmp/amap/Amap.lpx --previous-report source-report.json --report /tmp/no-rstore-source-report.json
+      - name: Build from an empty structural base only
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/no-rstore-empty-base.plugin <<'EOF'
+          #!name=Empty structural scaffold
+          [Argument]
+          [Rule]
+          [Rewrite]
+          [Script]
+          [MITM]
+          EOF
+          python3 merge_plugins.py --base /tmp/no-rstore-empty-base.plugin --extra none --filter none --romeo-plugins /tmp/romeo --zmjde /tmp/romeo-zmjde/Plugin --qxapp /tmp/GuaZiVideoAds.conf --amap /tmp/amap/Amap.lpx --myblockads none --alipayadblock sources/alipayAdBlock/alipayAdBlock.lpx --out /tmp/independent-apps.plugin --provenance-out /tmp/no-rstore-rule-provenance.json --source-report /tmp/no-rstore-source-report.json
+          python3 integrate_spotify.py --plugin /tmp/independent-apps.plugin --source-plugin sources/spotify/Spotify.lpx --scripts-source /tmp/spotify-scripts --scripts-dest scripts/spotify --upstream-commit "$ROMEO_SHA" --metadata /tmp/no-rstore-spotify-upstream.json
+          python3 apply_local_overrides.py --plugin /tmp/independent-apps.plugin
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/independent-apps.plugin')
+          lines=p.read_text(encoding='utf-8').splitlines()
+          replacements={
+            '#!name=':'#\x21name=独立来源去广告净化合集（无 R-Store base）',
+            '#!desc=':'#\x21desc=合并独立 App 来源；不含 R-Store base、继承规则或 MITM 声明。',
+            '#!author=':'#\x21author=Romeo / RuCu6 / zirawell / ddgksf2013（自动构建）',
+            '#!note=':'#\x21note=无 R-Store base 独立来源合集；不同 App 功能覆盖以来源和版本为准。',
+            '#!sources=':'#\x21sources=Romeo-independent+Kelee+RuCu6-Amap+AlipayAdBlock+GuaZiVideoAds+Spotify+YouTube',
+          }
+          out=[]
+          for line in lines:
+            key=next((k for k in replacements if line.startswith(k)),None)
+            out.append(replacements[key] if key else line)
+          p.write_text('\\n'.join(out)+'\\n',encoding='utf-8')
+          PY
+          python3 fix_script_configs.py --plugin /tmp/independent-apps.plugin
+          python3 check_script_v2.py /tmp/independent-apps.plugin
+          python3 validate_plugin.py /tmp/independent-apps.plugin
+          node --check sources/amap/rucu6_amap.js
+      - name: Rewrite all runtime URLs to pinned self-hosted assets
+        run: |
+          python3 tools/rewrite-script-assets.py /tmp/independent-apps.plugin 9e9969e12d062547c7db2062a0df6437b51ae76c
+      - name: Publish plugin and provenance reports
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp /tmp/independent-apps.plugin plugins/independent-apps.plugin
+          cp /tmp/no-rstore-source-report.json sources/build-source-report.json
+          cp /tmp/no-rstore-rule-provenance.json sources/build-rule-provenance.json
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          p=Path('plugins/independent-apps.plugin')
+          s=p.read_text(encoding='utf-8')
+          urls=set(re.findall(r'script-path=(https?://[^,\\s]+)',s))
+          urls.update(re.findall(r'script\\(\\s*[\\\"\\\'](https?://[^\\\"\\\']+)',s))
+          sections={}
+          current=''
+          for line in s.splitlines():
+            if line.startswith('[') and line.endswith(']'):
+              current=line[1:-1]; sections[current]=0
+            elif current and line.strip() and not line.lstrip().startswith('#'):
+              sections[current]=sections.get(current,0)+1
+          Path('sources/build-summary.json').write_text(json.dumps({
+            'build_mode':'independent-apps-only',
+            'rstore_base_included':False,
+            'romeo_commit':'51a9b27e769c8ced6762de800da9c1bba684d60a',
+            'asset_commit':'9e9969e12d062547c7db2062a0df6437b51ae76c',
+            'sections':sections,
+            'unique_script_urls':len(urls),
+            'plugin_bytes':p.stat().st_size
+          },ensure_ascii=False,indent=2)+'\\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins/independent-apps.plugin sources/build-*.json
+          git commit -m "build: publish complete independent-app bundle"
+          git push
+      - name: Validate all script URLs anonymously
+        run: python tools/check-script-assets.py
+      - name: Upload installable plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: independent-apps-plugin
+          path: plugins/independent-apps.plugin
+          retention-days: 30
