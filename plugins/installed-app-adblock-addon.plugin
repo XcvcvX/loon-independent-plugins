@@ -2,7 +2,7 @@
 #!desc=按当前设备 App 清单补充的静态广告接口拦截。仅 URL 匹配与请求拒绝，不调用 JS、不解析响应体；不含 R-Store Base。
 #!author=zirawell / Romeo（规则来源与适配）
 #!tag=去广告
-#!version=1.0.0
+#!version=1.0.1
 #!homepage=https://github.com/XcvcvX/loon-independent-plugins
 #!loon_version=3.5.1(978)
 
