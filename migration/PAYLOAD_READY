@@ -1,1 +1,1 @@
-Payload chunks corrected: use parts 1, 2a, 3, 4, 5 in that exact order. Materialize and validate before publishing.
+Verified transfer: 16 sequential chunks totaling 38,016 base64 characters. Materialize and validate the full independent-app plugin.
