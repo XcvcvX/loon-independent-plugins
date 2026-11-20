@@ -120,4 +120,4 @@ if not addon_host_line:
 addon_hosts = [host.strip() for host in addon_host_line.split("=", 1)[1].split(",") if host.strip()]
 if len(addon_hosts) != 14 or len(addon_hosts) != len(set(addon_hosts)):
     raise SystemExit(f"FAIL: companion MITM count/uniqueness mismatch: {len(addon_hosts)}")
-print("PASS: installed-app companion has 5 domain rules, 19 request-only rewrites, 14 unique MITM hosts, and no scripts.")
+print("PASS: installed-app companion has 5 domain rules, 20 request-only rewrites, 14 unique MITM hosts, and no scripts.")
