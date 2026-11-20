@@ -17,6 +17,9 @@ DOMAIN,ad-track.fliggy.com,REJECT
 # 百度地图：广告配置域名
 DOMAIN,afdconf.baidu.com,REJECT
 
+# 中国建设银行：广告资源域名
+DOMAIN-SUFFIX,adv.ccb.com,REJECT
+
 [Rewrite]
 # 携程：广告列表与百度信息流广告
 request if ${url} ~= /^https:\/\/m\.ctrip\.com\/restapi\/.*\/getAdsList/i then reject_dict(200)
