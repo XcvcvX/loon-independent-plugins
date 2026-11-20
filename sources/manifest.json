@@ -5,82 +5,79 @@
   "excluded_sources": [
     "R-Store base",
     "R-Store inherited rules",
-    "R-Store base MITM declarations"
+    "R-Store base MITM declarations",
+    "Generic GitHub request-header rewriting"
   ],
   "included_sources": [
     {
-      "name": "Spotify",
-      "status": "migrated",
+      "name": "Romeo independent app rules (including Kelee and legacy scripts)",
+      "status": "integrated",
+      "script_assets": 29
+    },
+    {
+      "name": "Romeo Spotify rules",
+      "status": "integrated",
       "script_assets": 4
     },
     {
-      "name": "Xianyu",
-      "status": "migrated",
-      "script_assets": 1
-    },
-    {
-      "name": "Qunar",
-      "status": "migrated",
-      "script_assets": 1
-    },
-    {
-      "name": "Chelaile",
-      "status": "migrated",
-      "script_assets": 1
-    },
-    {
-      "name": "Romeo independent apps",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
-    },
-    {
-      "name": "Kelee independent apps",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
-    },
-    {
-      "name": "AOOMEE independent apps",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
-    },
-    {
       "name": "RuCu6 Amap",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
+      "status": "integrated",
+      "script_assets": 2
     },
     {
-      "name": "AlipayAdBlock",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
+      "name": "zirawell AlipayAdBlock",
+      "status": "integrated",
+      "script_assets": 0
     },
     {
-      "name": "GuaZiVideoAds",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
+      "name": "ddgksf2013 GuaZiVideoAds",
+      "status": "integrated",
+      "script_assets": 1
     },
     {
       "name": "YouTube enhancements",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
-    },
-    {
-      "name": "JD supplements",
-      "status": "pending",
-      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
+      "status": "integrated",
+      "script_assets": 4
     }
   ],
+  "bundle_counts": {
+    "argument": 18,
+    "rule": 719,
+    "rewrite": 563,
+    "script": 80,
+    "mitm_hosts": 303,
+    "mitm_wildcards": 1
+  },
+  "runtime_assets": {
+    "unique_files": 40,
+    "javascript": 38,
+    "jq": 2,
+    "immutable_commit_urls": true,
+    "anonymous_https_validation": true
+  },
   "delivery_policy": {
     "first_party_scripts": "vendored",
-    "script_urls": "immutable commit SHA",
+    "third_party_scripts": "vendored",
+    "runtime_urls": "immutable commit SHA in this repository",
     "anonymous_http_200_required": true,
     "empty_scripts_rejected": true,
-    "missing_assets_rejected": true
+    "missing_assets_rejected": true,
+    "external_runtime_assets_rejected": true
   },
-  "note": "The published plugin remains the first staged bundle. Vendored script assets do not mean their complete source rule sets have already been integrated.",
+  "device_validation": {
+    "status": "pending",
+    "required_cases": [
+      "Spotify launch/login/playback",
+      "Xianyu feed/search",
+      "Amap search/navigation",
+      "remaining apps used by the user"
+    ],
+    "note": "Static and public asset checks do not replace physical-device Loon regression testing. No battery or performance gain is claimed without measurement."
+  },
   "migration_status": {
-    "preview_script_assets_vendored": 39,
-    "full_rule_bundle": "pending",
-    "full_bundle_ci": "pending",
-    "reason": "The original loon-change source repository is private; the public destination Actions runner cannot check it out. Migration must use the authorized GitHub connection rather than unauthenticated cross-repo checkout."
+    "original_repository_visibility": "unchanged_private",
+    "migration_method": "authorized file-by-file migration",
+    "full_no_base_snapshot": "prepared for publication",
+    "base_checkout_required": false
   }
 }
