@@ -49,7 +49,7 @@ A second, standalone low-overhead companion plugin was added from the installed-
 
 `https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/plugins/installed-app-adblock-addon.plugin`
 
-- 5 domain rules, 19 exact request URL filters, 14 unique MITM hosts.
+- 5 domain rules, 20 exact request URL filters, 14 unique MITM hosts.
 - No JavaScript, no response-body parsing, and no broad catch-all app rules.
 - Covers selected ad endpoints for Meituan/Meituan Waimai, Ctrip, Fliggy, Didi, Baidu Maps, Baidu Netdisk, Cainiao, PICC, Tuhu and China Construction Bank.
 - This companion is a separate GPL-3.0 artifact derived from zirawell's R-Store ad-block rules. Its attribution and license are in `LICENSES/`.
