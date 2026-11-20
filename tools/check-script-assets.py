@@ -110,8 +110,8 @@ if any(token in addon_source for token in ["script-path=", "http-response ", "re
     raise SystemExit("FAIL: companion must remain free of scripts and response-body parsing")
 if len(addon_sections["Rule"]) != 5:
     raise SystemExit(f"FAIL: companion Rule count {len(addon_sections['Rule'])}, expected 5")
-if len(addon_sections["Rewrite"]) != 19:
-    raise SystemExit(f"FAIL: companion Rewrite count {len(addon_sections['Rewrite'])}, expected 19")
+if len(addon_sections["Rewrite"]) != 20:
+    raise SystemExit(f"FAIL: companion Rewrite count {len(addon_sections['Rewrite'])}, expected 20")
 if any(not line.startswith("request if ") or "then reject_dict(200)" not in line for line in addon_sections["Rewrite"]):
     raise SystemExit("FAIL: companion Rewrite entries must be exact request URL rejects")
 addon_host_line = next((line for line in addon_sections["MITM"] if line.strip().lower().startswith("hostname") and "=" in line), None)
