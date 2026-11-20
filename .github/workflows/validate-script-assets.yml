@@ -1,0 +1,28 @@
+name: Validate plugin script assets
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/**"
+      - "scripts/**"
+      - "tools/**"
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "plugins/**"
+      - "scripts/**"
+      - "tools/**"
+      - ".github/workflows/**"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  anonymous-script-download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Verify every active script-path over anonymous HTTPS
+        run: python tools/check-script-assets.py
