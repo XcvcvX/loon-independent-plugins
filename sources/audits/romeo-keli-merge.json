@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "source": {
+    "name": "可莉广告过滤器",
+    "author": "可莉",
+    "repository": "ifflagged/Romeo",
+    "path": "Modules/Loon/fking/Beta/Remove_ads_by_keli.lpx",
+    "commit": "318cef4811f8402b92cfd0a886f9ebdcf99a3732",
+    "immutable_url": "https://raw.githubusercontent.com/ifflagged/Romeo/318cef4811f8402b92cfd0a886f9ebdcf99a3732/Modules/Loon/fking/Beta/Remove_ads_by_keli.lpx"
+  },
+  "result": {
+    "status": "integrated_deduplicated",
+    "rule_entries": 24,
+    "unique_rule_entries": 23,
+    "duplicate_rule_entries_in_source": 1,
+    "unique_rules_already_covered": 23,
+    "newly_added_rules": 0,
+    "rewrite_entries": 82,
+    "unique_rewrites_already_covered": 82,
+    "newly_added_rewrites": 0,
+    "mitm_entries_in_source": 63,
+    "mitm_hosts_before": 303,
+    "mitm_hosts_after": 302,
+    "mitm_consolidation": {
+      "removed": [
+        "api-mifit.huami.com",
+        "api-mifit-cn2.huami.com"
+      ],
+      "retained": [
+        "api-mifit*.huami.com"
+      ],
+      "reason": "The source uses broad api-mifit URL matchers; one wildcard covers the two existing exact hosts and related variants."
+    },
+    "omitted_unreferenced_source_mitm": [
+      "api-access.pangolin-sdk-toutiao*.com",
+      "api.ahmobile.cn",
+      "api.wfdata.club",
+      "ether-pack.pangolin-sdk-toutiao.com",
+      "gromore.pangolin-sdk-toutiao.com",
+      "iyes.youku.com",
+      "lfd?-analytics.bytescm.com",
+      "lfd?-cdn-tos.bytescm.com",
+      "sfd?-fe-tos.pglstatp-toutiao.com"
+    ]
+  },
+  "validation": {
+    "rstore_base_added": false,
+    "script_assets_added": 0,
+    "github_mitm_added": false,
+    "github_header_rewrite_added": false,
+    "device_regression": "not performed"
+  }
+}
