@@ -4,7 +4,7 @@ Audit basis: the installed-app names and Bundle IDs supplied by the user; Romeo 
 
 ## Added in the companion plugin
 
-The companion file is `plugins/installed-app-adblock-addon.plugin`. It is intentionally static: 5 domain rules, 19 exact URL request matchers, 14 MITM host declarations, and **zero scripts / zero response-body parsers**.
+The companion file is `plugins/installed-app-adblock-addon.plugin`. It is intentionally static: 5 domain rules, 20 exact URL request matchers, 14 MITM host declarations, and **zero scripts / zero response-body parsers**.
 
 | Installed app | Bundle ID | Added coverage |
 |---|---|---|
