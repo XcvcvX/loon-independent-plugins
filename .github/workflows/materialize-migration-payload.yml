@@ -1,0 +1,76 @@
+name: Materialize independent-app migration payload
+on:
+  push:
+    branches: [migration/full-independent-plugin]
+    paths:
+      - "migration/PAYLOAD_READY"
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: migration/full-independent-plugin
+          persist-credentials: true
+      - name: Install xz utilities
+        run: sudo apt-get update && sudo apt-get install -y xz-utils
+      - name: Decode, inspect, and materialize complete plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat migration/final-payload-{01..16} > /tmp/independent-apps.b64
+          test "$(wc -c < /tmp/independent-apps.b64)" -eq 38016
+          base64 --decode /tmp/independent-apps.b64 > /tmp/independent-apps.plugin.xz
+          xz -t /tmp/independent-apps.plugin.xz
+          xz -dc /tmp/independent-apps.plugin.xz > /tmp/independent-apps.plugin
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path("/tmp/independent-apps.plugin")
+          s = p.read_text(encoding="utf-8")
+          names = ["Argument", "Rule", "Rewrite", "Script", "MITM"]
+          assert all(s.count(f"[{name}]") == 1 for name in names), "section structure mismatch"
+          assert "XcvcvX/loon-change" not in s, "private source repository reference remains"
+          assert "Script-Hub-Org_replace-header.js" not in s, "generic GitHub header rewrite remains"
+          assert "raw.githubusercontent.com/XcvcvX/loon-independent-plugins/" in s, "vendored script URLs missing"
+          sections = {}
+          lines = s.splitlines()
+          for name in names:
+              start = lines.index(f"[{name}]") + 1
+              end = next((i for i in range(start, len(lines)) if lines[i].startswith("[") and lines[i].endswith("]")), len(lines))
+              sections[name] = [line for line in lines[start:end] if line.strip() and not line.lstrip().startswith("#")]
+          expected = {"Argument": 18, "Rule": 719, "Rewrite": 563, "Script": 80}
+          for name, count in expected.items():
+              assert len(sections[name]) == count, f"{name} count mismatch: {len(sections[name])}"
+          mitm = sections["MITM"]
+          host_line = next(line for line in mitm if line.strip().lower().startswith("hostname") and "=" in line)
+          hosts = [host.strip() for host in host_line.split("=", 1)[1].split(",") if host.strip()]
+          assert len(hosts) == 303 and len(hosts) == len(set(hosts)), "MITM host count/uniqueness mismatch"
+          assert not any("github.com" in host.lower() or "githubusercontent.com" in host.lower() for host in hosts), "GitHub MITM host remains"
+          urls = set(re.findall(r"script-path=(https?://[^,\s]+)", s))
+          urls.update(re.findall(r"""(?:script|jq_file)\(\s*["'](https?://[^"']+)["']""", s))
+          assert len(urls) == 40, f"runtime asset count mismatch: {len(urls)}"
+          pattern = re.compile(r"^https://raw\.githubusercontent\.com/XcvcvX/loon-independent-plugins/([0-9a-f]{40})/.+")
+          commits = set()
+          for url in urls:
+              match = pattern.match(url)
+              assert match, f"non-vendored or unpinned runtime URL: {url}"
+              commits.add(match.group(1))
+          assert len(commits) == 1, f"mixed asset pins: {commits}"
+          Path("sources/script-assets.txt").write_text("\n".join(sorted(urls)) + "\n", encoding="utf-8")
+          print("PASS static migration checks:", expected, "MITM hosts:", len(hosts), "runtime assets:", len(urls), "pin:", next(iter(commits)))
+          PY
+          cp /tmp/independent-apps.plugin plugins/independent-apps.plugin
+          python tools/check-script-assets.py
+      - name: Commit full plugin and remove transfer payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f migration/final-payload-* migration/payload-part-* migration/PAYLOAD_READY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins/independent-apps.plugin sources/script-assets.txt migration/
+          git commit -m "feat(plugin): migrate full independent app bundle"
+          git push origin "HEAD:migration/full-independent-plugin"
