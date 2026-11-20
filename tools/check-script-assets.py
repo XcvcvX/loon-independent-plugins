@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Fail CI unless every active Loon script asset is anonymously downloadable."""
+"""Fail CI unless every active or inventoried Loon script asset is anonymously downloadable."""
 import re, sys, time, urllib.request
 from pathlib import Path
 
 PLUGIN = Path("plugins/independent-apps.plugin")
 text = PLUGIN.read_text(encoding="utf-8")
 urls = set(re.findall(r"script-path=(https?://[^,\s]+)", text))
-urls.update(re.findall(r'script\(\s*["\'](https?://[^"\']+)["\']', text))
+urls.update(re.findall(r"""script\(\s*["'](https?://[^"']+)["']""", text))
+inventory = Path("sources/script-assets.txt")
+if inventory.exists():
+    urls.update(line.strip() for line in inventory.read_text(encoding="utf-8").splitlines() if line.strip() and not line.lstrip().startswith("#"))
 if not urls:
     raise SystemExit("FAIL: no script assets found")
 failed=[]
