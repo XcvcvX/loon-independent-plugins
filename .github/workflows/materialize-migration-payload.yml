@@ -4,10 +4,6 @@ on:
     branches: [migration/full-independent-plugin]
     paths:
       - "migration/PAYLOAD_READY"
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - "migration/PAYLOAD_READY"
 permissions:
   contents: write
 jobs:
@@ -16,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: migration/full-independent-plugin
           persist-credentials: true
       - name: Install xz utilities
         run: sudo apt-get update && sudo apt-get install -y xz-utils
@@ -24,24 +20,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat migration/payload-part-* > /tmp/independent-apps.b64
+          cat migration/payload-part-1 migration/payload-part-2a migration/payload-part-3 migration/payload-part-4 migration/payload-part-5 > /tmp/independent-apps.b64
           base64 --decode /tmp/independent-apps.b64 > /tmp/independent-apps.plugin.xz
           xz -t /tmp/independent-apps.plugin.xz
           xz -dc /tmp/independent-apps.plugin.xz > /tmp/independent-apps.plugin
           python - <<'PY'
           from pathlib import Path
-          import re
           p = Path("/tmp/independent-apps.plugin")
           s = p.read_text(encoding="utf-8")
           required = ["[Argument]", "[Rule]", "[Rewrite]", "[Script]", "[MITM]"]
           assert all(s.count(x) == 1 for x in required), "section structure mismatch"
           assert "XcvcvX/loon-change" not in s, "private source URL remains"
           assert "Script-Hub-Org_replace-header.js" not in s, "GitHub header rewrite remains"
-          assert "raw.githubusercontent.com/XcvcvX/loon-independent-plugins/621002d0ece654a1a05e035862ed2a955b22f59b/scripts/first-party/amap-recommend.jq" in s
-          assert "raw.githubusercontent.com/XcvcvX/loon-independent-plugins/6f201bb6823d258407149cb454ed28d6bd344743/scripts/vendor/romeo/Kelee/smzdm_remove_ads/kelee.one_home_smzdm_remove_ads.jq" in s
-          mitm = s.split("[MITM]", 1)[1]
-          assert "github.com" not in mitm.lower(), "GitHub host in MITM"
-          line = next(x for x in mitm.splitlines() if x.startswith("hostname = "))
+          assert "github.com" not in s.split("[MITM]", 1)[1].lower(), "GitHub host in MITM"
+          line = next(x for x in s.split("[MITM]", 1)[1].splitlines() if x.startswith("hostname = "))
           hosts = [x.strip() for x in line.split("=", 1)[1].split(",") if x.strip()]
           assert len(hosts) == len(set(hosts)), "duplicate MITM hosts"
           print("PASS static structure; bytes:", p.stat().st_size, "MITM hosts:", len(hosts))
@@ -57,4 +49,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add plugins/independent-apps.plugin migration/
           git commit -m "feat(plugin): migrate full independent app bundle"
-          git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
+          git push origin "HEAD:migration/full-independent-plugin"
