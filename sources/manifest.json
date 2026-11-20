@@ -46,6 +46,17 @@
       "rules_added": 0,
       "rewrites_added": 0,
       "mitm_patterns_consolidated": 1
+    },
+    {
+      "name": "zirawell/R-Store ad-block rules (selected static subset via Romeo Loon modules)",
+      "status": "integrated_separate_gpl_companion",
+      "license": "GPL-3.0",
+      "plugin": "plugins/installed-app-adblock-addon.plugin",
+      "rule_entries": 5,
+      "rewrite_entries": 19,
+      "mitm_hosts": 14,
+      "script_assets": 0,
+      "response_body_processing": false
     }
   ],
   "bundle_counts": {
@@ -104,5 +115,17 @@
       "mitm_change": "Replace api-mifit.huami.com and api-mifit-cn2.huami.com with api-mifit*.huami.com; omit nine extra unused/broader source declarations.",
       "net_mitm_host_entry_change": -1
     }
-  ]
+  ],
+  "companion_addons": {
+    "installed_app_adblock": {
+      "plugin": "plugins/installed-app-adblock-addon.plugin",
+      "license": "GPL-3.0",
+      "rule_entries": 5,
+      "rewrite_entries": 19,
+      "mitm_hosts": 14,
+      "script_entries": 0,
+      "response_body_processing": false,
+      "source_audit": "sources/installed-app-match-audit.md"
+    }
+  }
 }
