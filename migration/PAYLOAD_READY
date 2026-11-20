@@ -1,1 +1,1 @@
-All five base64 chunks are committed. Decode and validate before publishing.
+Payload chunks corrected: use parts 1, 2a, 3, 4, 5 in that exact order. Materialize and validate before publishing.
