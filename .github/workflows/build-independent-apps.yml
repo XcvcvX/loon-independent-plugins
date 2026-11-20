@@ -115,7 +115,7 @@ jobs:
           from pathlib import Path
           p=Path('plugins/independent-apps.plugin')
           s=p.read_text(encoding='utf-8')
-          urls=set(re.findall(r'script-path=(https?://[^,\\s]+)',s))
+          urls=set(re.findall(r'script-path=(https?://[^,\s]+)',s))
           urls.update(re.findall(r'''script\(\s*["'](https?://[^"']+)''',s))
           sections={}
           current=''
