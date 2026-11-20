@@ -2,7 +2,6 @@
 #!desc=独立 App 规则首批整合：Spotify、闲鱼、去哪儿、车来了。完全不依赖 R-Store base；脚本随新仓库托管并固定到不可变 commit。
 #!author=XcvcvX / 原作者见脚本注释
 #!homepage=https://github.com/XcvcvX/loon-independent-plugins
-#!icon=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/assets/icon.png
 
 [Script]
 http-request ^https:\/\/(?:.*-spclient\.spotify\.com(?::443)?|spclient\.wg\.spotify\.com)\/gabo-receiver-service script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/spotify/spot-gabo.js, timeout=10, tag=Spotify gabo
