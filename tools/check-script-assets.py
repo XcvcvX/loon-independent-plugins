@@ -8,9 +8,9 @@ from pathlib import Path
 
 PLUGIN = Path("plugins/independent-apps.plugin")
 source = PLUGIN.read_text(encoding="utf-8")
-urls = set(re.findall(r"script-path=(https?://[^,\\s]+)", source))
-urls.update(re.findall(r"""script\\(\\s*["'](https?://[^"']+)["']""", source))
-urls.update(re.findall(r"""jq_file\\(\\s*["'](https?://[^"']+)["']""", source))
+urls = set(re.findall(r"script-path=(https?://[^,\s]+)", source))
+urls.update(re.findall(r"""script\(\s*["'](https?://[^"']+)["']""", source))
+urls.update(re.findall(r"""jq_file\(\s*["'](https?://[^"']+)["']""", source))
 
 inventory_path = Path("sources/script-assets.txt")
 inventory = {
