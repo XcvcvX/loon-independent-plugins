@@ -76,8 +76,8 @@
   },
   "migration_status": {
     "original_repository_visibility": "unchanged_private",
-    "migration_method": "authorized file-by-file migration",
-    "full_no_base_snapshot": "prepared for publication",
+    "migration_method": "authorized_file_by_file_transfer_from_successful_no_base_preview_artifact",
+    "full_no_base_snapshot": "migrated_in_PR_1_pending_device_regression",
     "base_checkout_required": false
   }
 }
