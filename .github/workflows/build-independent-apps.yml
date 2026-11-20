@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: independent-apps-publish
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -91,7 +94,7 @@ jobs:
           for line in lines:
             key=next((k for k in replacements if line.startswith(k)),None)
             out.append(replacements[key] if key else line)
-          p.write_text('\\n'.join(out)+'\\n',encoding='utf-8')
+          p.write_text('\n'.join(out)+'\n',encoding='utf-8')
           PY
           python3 fix_script_configs.py --plugin /tmp/independent-apps.plugin
           python3 check_script_v2.py /tmp/independent-apps.plugin
@@ -113,7 +116,7 @@ jobs:
           p=Path('plugins/independent-apps.plugin')
           s=p.read_text(encoding='utf-8')
           urls=set(re.findall(r'script-path=(https?://[^,\\s]+)',s))
-          urls.update(re.findall(r'script\\(\\s*[\\\"\\\'](https?://[^\\\"\\\']+)',s))
+          urls.update(re.findall(r'''script\(\s*["'](https?://[^"']+)''',s))
           sections={}
           current=''
           for line in s.splitlines():
@@ -129,7 +132,7 @@ jobs:
             'sections':sections,
             'unique_script_urls':len(urls),
             'plugin_bytes':p.stat().st_size
-          },ensure_ascii=False,indent=2)+'\\n')
+          },ensure_ascii=False,indent=2)+'\n')
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
