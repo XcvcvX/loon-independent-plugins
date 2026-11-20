@@ -1,0 +1,55 @@
+name: Materialize private-source migration payload
+on:
+  push:
+    branches: [migration/full-independent-plugin]
+    paths:
+      - "migration/independent-apps-migrated.plugin.xz"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          persist-credentials: true
+      - name: Install xz utilities
+        run: sudo apt-get update && sudo apt-get install -y xz-utils
+      - name: Decompress and perform static migration checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          xz -t migration/independent-apps-migrated.plugin.xz
+          xz -dc migration/independent-apps-migrated.plugin.xz > /tmp/independent-apps.plugin
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path("/tmp/independent-apps.plugin")
+          s = p.read_text(encoding="utf-8")
+          required = ["[Argument]", "[Rule]", "[Rewrite]", "[Script]", "[MITM]"]
+          assert all(s.count(x) == 1 for x in required), "section structure mismatch"
+          assert "XcvcvX/loon-change" not in s, "private source URL remains"
+          assert "Script-Hub-Org_replace-header.js" not in s, "GitHub header rewrite remains"
+          assert "raw.githubusercontent.com/XcvcvX/loon-independent-plugins/621002d0ece654a1a05e035862ed2a955b22f59b/scripts/first-party/amap-recommend.jq" in s
+          assert "raw.githubusercontent.com/XcvcvX/loon-independent-plugins/6f201bb6823d258407149cb454ed28d6bd344743/scripts/vendor/romeo/Kelee/smzdm_remove_ads/kelee.one_home_smzdm_remove_ads.jq" in s
+          mitm = s.split("[MITM]", 1)[1]
+          assert "github.com" not in mitm.lower(), "GitHub host in MITM"
+          line = next(x for x in mitm.splitlines() if x.startswith("hostname = "))
+          hosts = [x.strip() for x in line.split("=", 1)[1].split(",") if x.strip()]
+          assert len(hosts) == len(set(hosts)), "duplicate MITM hosts"
+          print("PASS static structure; bytes:", p.stat().st_size, "MITM hosts:", len(hosts))
+          PY
+          cp /tmp/independent-apps.plugin plugins/independent-apps.plugin
+          python tools/check-script-assets.py
+      - name: Commit plugin and remove temporary payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f migration/independent-apps-migrated.plugin.xz
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins/independent-apps.plugin migration/independent-apps-migrated.plugin.xz
+          git commit -m "feat(plugin): migrate full independent app bundle"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
