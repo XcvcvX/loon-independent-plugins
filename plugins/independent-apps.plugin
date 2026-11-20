@@ -1,0 +1,25 @@
+#!name=独立 App 去广告合集（无 R-Store base）
+#!desc=独立 App 规则首批整合：Spotify、闲鱼、去哪儿、车来了。完全不依赖 R-Store base；脚本随新仓库托管并固定到不可变 commit。
+#!author=XcvcvX / 原作者见脚本注释
+#!homepage=https://github.com/XcvcvX/loon-independent-plugins
+#!icon=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/assets/icon.png
+
+[Script]
+http-request ^https:\/\/(?:.*-spclient\.spotify\.com(?::443)?|spclient\.wg\.spotify\.com)\/gabo-receiver-service script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/spotify/spot-gabo.js, timeout=10, tag=Spotify gabo
+http-response ^https:\/\/(?:spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(?::443)?)\/browsita\/v.\/browse script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/spotify/spot-NoSearchAd.js, requires-body=true, binary-body-mode=true, timeout=10, tag=Spotify 搜索广告
+http-response ^https:\/\/(?:spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(?::443)?)\/casita\/v.\/home\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/spotify/spot-NoHomeAd.js, requires-body=true, binary-body-mode=true, timeout=10, tag=Spotify 首页广告
+http-response ^https:\/\/(?:spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(?::443)?)\/scrollsita\/v.\/scroll\/spotify script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/spotify/spot-NoScrollAd.js, requires-body=true, binary-body-mode=true, timeout=10, tag=Spotify 滚动流广告
+http-response ^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlehome\.home\.nextfresh\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼首页信息流, requires-body=true
+http-response ^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.home\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼本地页, requires-body=true
+http-response ^https?:\/\/(?:g-)?acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.home\.whale\.modulet\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼模块, requires-body=true
+http-response ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.idle\.user\.page\.my\.adapter\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼个人页, requires-body=true
+http-response ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlehome\.home\.circle\.list\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼鱼塘, requires-body=true
+http-response ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.nearby\.itemdetail\.enter\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼附近详情, requires-body=true
+http-response ^https:\/\/g-acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idlemtopsearch\.search\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼搜索, requires-body=true
+http-response ^https:\/\/acs\.m\.goofish\.com\/gw\/mtop\.taobao\.idle\.local\.flow\.plat\.section script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/xianyu/goofish.js, tag=闲鱼本地信息流, requires-body=true
+http-response ^https?:\/\/(?:api|cdn\.api)\.chelaile(?:app)?(?:\.net)?\.cn\/goocity\/flowPos\/listByPos script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/romeo_legacy/chelaile-flowpos.js, requires-body=true, timeout=20, tag=车来了流量位清理
+http-response ^https?:\/\/(?:slugger|minislugger|homefront|homeback|qbi|lang|qde|client)\.qunar\.com\/ script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/romeo_legacy/qunar-clean.js, requires-body=true, timeout=10, tag=去哪儿广告清理
+generic script-path=https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/60485ce0dbab5e92cd85068a95cbdd854f4c9308/scripts/romeo_legacy/qunar-clean.js, tag=去哪儿清理运行状态, timeout=10
+
+[MITM]
+hostname = %APPEND% *.spclient.spotify.com, spclient.wg.spotify.com, acs.m.goofish.com, g-acs.m.goofish.com, api.chelaile.cn, cdn.api.chelaile.cn, api.chelaileapp.net.cn, cdn.api.chelaileapp.net.cn, slugger.qunar.com, minislugger.qunar.com, homefront.qunar.com, homeback.qunar.com, qbi.qunar.com, lang.qunar.com, qde.qunar.com, client.qunar.com
