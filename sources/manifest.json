@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "build_mode": "independent-apps-only",
+  "base_plugin": null,
+  "excluded_sources": [
+    "R-Store base"
+  ],
+  "included_sources": [
+    {
+      "name": "Romeo independent app plugins",
+      "status": "planned"
+    },
+    {
+      "name": "Kelee independent app plugins",
+      "status": "planned"
+    },
+    {
+      "name": "AOOMEE independent app plugins",
+      "status": "planned"
+    },
+    {
+      "name": "RuCu6 Amap",
+      "status": "planned"
+    },
+    {
+      "name": "Spotify",
+      "status": "planned"
+    },
+    {
+      "name": "AlipayAdBlock",
+      "status": "planned"
+    },
+    {
+      "name": "GuaZiVideoAds",
+      "status": "planned"
+    },
+    {
+      "name": "YouTube independent enhancements",
+      "status": "planned"
+    },
+    {
+      "name": "Xianyu independent rules",
+      "status": "planned"
+    },
+    {
+      "name": "JD independent rules",
+      "status": "planned"
+    }
+  ],
+  "delivery_policy": {
+    "first_party_scripts": "vendored",
+    "immutable_references": true,
+    "require_anonymous_http_200": true,
+    "reject_empty_scripts": true,
+    "reject_missing_local_assets": true
+  },
+  "note": "Initial scaffold only. Source migration and validation must complete before this manifest is treated as a release inventory."
+}
