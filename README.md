@@ -1,32 +1,30 @@
 # Loon Independent Plugins
 
-A standalone Loon plugin bundle built from independent app-specific sources only.
+A standalone Loon plugin collection built from independent app-specific sources. **No R-Store base plugin, inherited R-Store rules, or R-Store base MITM declaration is included.**
 
-## Scope
+## First usable bundle
 
-- No R-Store base plugin, rules, rewrites, scripts, or inherited MITM declarations.
-- Independent app-specific sources are reviewed and merged into a single generated Loon plugin.
-- First-party scripts should be vendored in this repository and referenced through immutable commit URLs or release assets.
-- Third-party script dependencies must be checked for anonymous availability before release.
+- [Independent Apps plugin](plugins/independent-apps.plugin)
+- Subscription URL:
+  `https://raw.githubusercontent.com/XcvcvX/loon-independent-plugins/main/plugins/independent-apps.plugin`
 
-## Repository layout
+The initial bundle currently includes Spotify, Xianyu, Qunar, and Chelaile handlers. This is a staged first release, not yet the complete migration of every independent source from the previous no-base preview. Other planned sources remain marked as pending in `sources/manifest.json`.
 
-- `plugins/`: source app plugins and source snapshots.
-- `scripts/`: locally maintained or mirrored JavaScript assets.
-- `dist/`: generated distributable plugin and build reports.
-- `sources/`: source manifest and provenance records.
-- `.github/workflows/`: validation and build automation.
+## Script delivery
 
-## Build and release policy
+- First-party scripts are vendored under `scripts/`.
+- Plugin script URLs are pinned to an immutable Git commit, not a moving branch.
+- GitHub Actions anonymously fetches every active `script-path` URL and fails on non-200, empty, oversized, or unpinned assets.
+- Third-party scripts are not copied or claimed as verified until their licensing, attribution, and anonymous availability are checked.
 
-A build must fail if any active `script-path` cannot be fetched anonymously, returns an HTTP error, is empty, or references an untracked/missing local asset. The generated plugin must pass syntax/structure audits and an explicit no-R-Store-base check.
+## Install
 
-Do not treat a successful GitHub-authenticated API fetch as proof that a Loon client can anonymously download a script.
+In Loon: Configuration → Plugins → Add → paste the subscription URL above. Enable only after checking the plugin's app scope and MITM domains. Completely quit and reopen the target app to test.
 
-## Current status
+## Validation status
 
-Repository initialized. Source migration and first reproducible build are the next steps. The previous no-base preview is a starting snapshot, not yet considered production-ready: its script delivery paths still require end-to-end validation in Loon.
+The repository's automated anonymous-download check is the delivery gate. It does not replace on-device Loon testing. In particular, Spotify startup/playback, Xianyu feed/search, Qunar pages, and Chelaile traffic positions still require real-device regression checks.
 
-## License and attribution
+## Attribution
 
-Each imported source retains its upstream author attribution and applicable license. Do not remove source notices when mirroring or transforming scripts.
+Original script headers and author notices are retained. Please preserve upstream attribution and applicable licenses when redistributing.
