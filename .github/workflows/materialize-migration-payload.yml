@@ -49,17 +49,17 @@ jobs:
           hosts = [host.strip() for host in host_line.split("=", 1)[1].split(",") if host.strip()]
           assert len(hosts) == 303 and len(hosts) == len(set(hosts)), "MITM host count/uniqueness mismatch"
           assert not any("github.com" in host.lower() or "githubusercontent.com" in host.lower() for host in hosts), "GitHub MITM host remains"
-          urls = set(re.findall(r"script-path=(https?://[^,\\s]+)", s))
-          urls.update(re.findall(r"""(?:script|jq_file)\\(\\s*["'](https?://[^"']+)["']""", s))
+          urls = set(re.findall(r"script-path=(https?://[^,\s]+)", s))
+          urls.update(re.findall(r"""(?:script|jq_file)\(\s*["'](https?://[^"']+)["']""", s))
           assert len(urls) == 40, f"runtime asset count mismatch: {len(urls)}"
-          pattern = re.compile(r"^https://raw\\.githubusercontent\\.com/XcvcvX/loon-independent-plugins/([0-9a-f]{40})/.+")
+          pattern = re.compile(r"^https://raw\.githubusercontent\.com/XcvcvX/loon-independent-plugins/([0-9a-f]{40})/.+")
           commits = set()
           for url in urls:
               match = pattern.match(url)
               assert match, f"non-vendored or unpinned runtime URL: {url}"
               commits.add(match.group(1))
           assert len(commits) == 1, f"mixed asset pins: {commits}"
-          Path("sources/script-assets.txt").write_text("\\n".join(sorted(urls)) + "\\n", encoding="utf-8")
+          Path("sources/script-assets.txt").write_text("\n".join(sorted(urls)) + "\n", encoding="utf-8")
           print("PASS static migration checks:", expected, "MITM hosts:", len(hosts), "runtime assets:", len(urls), "pin:", next(iter(commits)))
           PY
           cp /tmp/independent-apps.plugin plugins/independent-apps.plugin
