@@ -30,35 +30,43 @@
     },
     {
       "name": "Romeo independent apps",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "Kelee independent apps",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "AOOMEE independent apps",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "RuCu6 Amap",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "AlipayAdBlock",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "GuaZiVideoAds",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "YouTube enhancements",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     },
     {
       "name": "JD supplements",
-      "status": "pending"
+      "status": "pending",
+      "script_assets_status": "vendored where referenced by no-base preview; rule integration pending"
     }
   ],
   "delivery_policy": {
@@ -68,5 +76,11 @@
     "empty_scripts_rejected": true,
     "missing_assets_rejected": true
   },
-  "note": "This is the first usable staged bundle. Pending sources have not yet been migrated or validated; do not interpret them as included."
+  "note": "The published plugin remains the first staged bundle. Vendored script assets do not mean their complete source rule sets have already been integrated.",
+  "migration_status": {
+    "preview_script_assets_vendored": 39,
+    "full_rule_bundle": "pending",
+    "full_bundle_ci": "pending",
+    "reason": "The original loon-change source repository is private; the public destination Actions runner cannot check it out. Migration must use the authorized GitHub connection rather than unauthenticated cross-repo checkout."
+  }
 }
