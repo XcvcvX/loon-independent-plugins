@@ -45,10 +45,11 @@ request if ${url} ~= /^https:\/\/pan\.baidu\.com\/act\/v\d\/(bchannel|welfare)\/
 request if ${url} ~= /^https:\/\/pan\.baidu\.com\/act\/api\/activityentry(?:\?|$)/i then reject_dict(200)
 
 # 菜鸟：广告关键词、广告推荐和飞行广告接口
-request if ${url} ~= /^https:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.adkeyword\.get\.cn/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.adkeyword\.get/i then reject_dict(200)
 request if ${url} ~= /^https:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads/i then reject_dict(200)
 request if ${url} ~= /^https:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.adx\.flyad\.getad/i then reject_dict(200)
-request if ${url} ~= /^https:\/\/netflow-mtop\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.index/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/netflow-mtop\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads/i then reject_dict(200)
 
 # 中国人保：启动广告页和弹窗广告
 request if ${url} ~= /^https:\/\/zgrb\.epicc\.com\.cn\/G-HAPP\/a\/update\/startupPage(?:\?|$)/i then reject_dict(200)
