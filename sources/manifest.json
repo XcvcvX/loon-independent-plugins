@@ -53,7 +53,7 @@
       "license": "GPL-3.0",
       "plugin": "plugins/installed-app-adblock-addon.plugin",
       "rule_entries": 5,
-      "rewrite_entries": 19,
+      "rewrite_entries": 20,
       "mitm_hosts": 14,
       "script_assets": 0,
       "response_body_processing": false
@@ -121,7 +121,7 @@
       "plugin": "plugins/installed-app-adblock-addon.plugin",
       "license": "GPL-3.0",
       "rule_entries": 5,
-      "rewrite_entries": 19,
+      "rewrite_entries": 20,
       "mitm_hosts": 14,
       "script_entries": 0,
       "response_body_processing": false,
