@@ -3,56 +3,70 @@
   "build_mode": "independent-apps-only",
   "base_plugin": null,
   "excluded_sources": [
-    "R-Store base"
+    "R-Store base",
+    "R-Store inherited rules",
+    "R-Store base MITM declarations"
   ],
   "included_sources": [
     {
-      "name": "Romeo independent app plugins",
-      "status": "planned"
+      "name": "Spotify",
+      "status": "migrated",
+      "script_assets": 4
     },
     {
-      "name": "Kelee independent app plugins",
-      "status": "planned"
+      "name": "Xianyu",
+      "status": "migrated",
+      "script_assets": 1
     },
     {
-      "name": "AOOMEE independent app plugins",
-      "status": "planned"
+      "name": "Qunar",
+      "status": "migrated",
+      "script_assets": 1
+    },
+    {
+      "name": "Chelaile",
+      "status": "migrated",
+      "script_assets": 1
+    },
+    {
+      "name": "Romeo independent apps",
+      "status": "pending"
+    },
+    {
+      "name": "Kelee independent apps",
+      "status": "pending"
+    },
+    {
+      "name": "AOOMEE independent apps",
+      "status": "pending"
     },
     {
       "name": "RuCu6 Amap",
-      "status": "planned"
-    },
-    {
-      "name": "Spotify",
-      "status": "planned"
+      "status": "pending"
     },
     {
       "name": "AlipayAdBlock",
-      "status": "planned"
+      "status": "pending"
     },
     {
       "name": "GuaZiVideoAds",
-      "status": "planned"
+      "status": "pending"
     },
     {
-      "name": "YouTube independent enhancements",
-      "status": "planned"
+      "name": "YouTube enhancements",
+      "status": "pending"
     },
     {
-      "name": "Xianyu independent rules",
-      "status": "planned"
-    },
-    {
-      "name": "JD independent rules",
-      "status": "planned"
+      "name": "JD supplements",
+      "status": "pending"
     }
   ],
   "delivery_policy": {
     "first_party_scripts": "vendored",
-    "immutable_references": true,
-    "require_anonymous_http_200": true,
-    "reject_empty_scripts": true,
-    "reject_missing_local_assets": true
+    "script_urls": "immutable commit SHA",
+    "anonymous_http_200_required": true,
+    "empty_scripts_rejected": true,
+    "missing_assets_rejected": true
   },
-  "note": "Initial scaffold only. Source migration and validation must complete before this manifest is treated as a release inventory."
+  "note": "This is the first usable staged bundle. Pending sources have not yet been migrated or validated; do not interpret them as included."
 }
